@@ -7,7 +7,7 @@ import { Record, RecordSchema } from './record.schema';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://arfan:1234@cluster0.gwemtwt.mongodb.net/csvTry?retryWrites=true&w=majority',
+      'mongodb+srv://arfan:1234@cluster0.gwemtwt.mongodb.net/csvTry1?retryWrites=true&w=majority',
     ),
     MongooseModule.forFeature([{ name: Record.name, schema: RecordSchema }]),
   ],
