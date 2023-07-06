@@ -1,14 +1,22 @@
+/* eslint-disable no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { KafkaClient, Producer, ProduceRequest } from 'kafka-node';
 import * as csvParser from 'csv-parser';
 import * as fs from 'fs';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Record, RecordDocument } from './record.schema';
+import { RecordDto } from './record.dto';
 
 @Injectable()
 export class KafkaProducerService {
   private readonly client: KafkaClient;
   private readonly producer: Producer;
 
-  constructor() {
+  constructor(
+    @InjectModel(Record.name)
+    private readonly recordModel: Model<RecordDocument>,
+  ) {
     this.client = new KafkaClient({ kafkaHost: 'localhost:9092' });
     this.producer = new Producer(this.client);
   }
@@ -19,15 +27,8 @@ export class KafkaProducerService {
     fs.createReadStream(filePath)
       .pipe(csvParser())
       .on('data', (data: any) => csvData.push(data))
-      .on('end', () => {
-        let i = 0;
-        const interval = setInterval(() => {
-          if (i >= csvData.length) {
-            clearInterval(interval);
-            return;
-          }
-
-          const row = csvData[i];
+      .on('end', async () => {
+        for (const row of csvData) {
           const statusDate = row['Status Date'];
           const mainTask = row['Main Task'];
           const address = row['Address'];
@@ -46,24 +47,43 @@ export class KafkaProducerService {
                 [topic]: {
                   'Status Date': statusDate,
                   'Main Task': mainTask,
-                  // eslint-disable-next-line prettier/prettier
-                  'Address': address,
+                  Address: address,
                   'Total Cost': totalCost,
                 },
               }),
             },
           ];
 
-          this.producer.send(payload, (error, result) => {
-            if (error) {
-              console.error('Error producing data:', error);
-            } else {
-              console.log('Produced data:', result);
-            }
+          await new Promise<void>((resolve) => {
+            this.producer.send(payload, (error, result) => {
+              if (error) {
+                console.error('Error producing data:', error);
+              } else {
+                console.log('Produced data:', result);
+                // Save to MongoDB
+                const recordDto: RecordDto = {
+                  statusDate,
+                  mainTask,
+                  address,
+                  totalCost,
+                };
+                const record = new this.recordModel(recordDto);
+                record
+                  .save()
+                  .then((savedRecord) => {
+                    console.log('Saved to MongoDB:', savedRecord);
+                    resolve();
+                  })
+                  .catch((saveError) => {
+                    console.error('Error saving to MongoDB:', saveError);
+                    resolve();
+                  });
+              }
+            });
           });
 
-          i++;
-        }, 5000);
+          await new Promise<void>((resolve) => setTimeout(resolve, 5000));
+        }
       });
   }
 }
