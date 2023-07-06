@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Record, RecordDocument } from './record.schema';
-import { RecordDto } from './record.dto';
+import { FirstCsvDto, SecondCsvDto } from './record.dto';
 
 @Injectable()
 export class KafkaProducerService {
@@ -21,51 +21,90 @@ export class KafkaProducerService {
     this.producer = new Producer(this.client);
   }
 
-  async produceData(
-    topic: string,
-    filePath: string,
-    isPreviousData = false,
-  ): Promise<void> {
-    const csvData: any[] = [];
+  async produceFirstCsvData(topic: string, filePath: string): Promise<void> {
+    const csvData: FirstCsvDto[] = [];
 
     fs.createReadStream(filePath)
       .pipe(csvParser())
       .on('data', (data: any) => csvData.push(data))
       .on('end', async () => {
         for (const row of csvData) {
-          let recordDto: RecordDto;
+          const recordDto: FirstCsvDto = {
+            statusDate: row['Status Date'],
+            mainTask: row['Main Task'],
+            address: row['Address'],
+            totalCost: row['Total Cost'],
+          };
 
-          if (isPreviousData) {
-            recordDto = {
-              statusDate: row['Status Date'],
-              mainTask: row['Main Task'],
-              address: row['Address'],
-              totalCost: row['Total Cost'],
-            };
-          } else {
-            recordDto = {
-              locId: row['loc_id'],
-              county: row['county'],
-              community: row['community'],
-              functionalClass: row['functional_class'],
-              ruralUrban: row['rural_urban'],
-              on: row['on'],
-              from: row['from'],
-              to: row['to'],
-              approach: row['approach'],
-              at: row['at'],
-              dir: row['dir'],
-              directions: row['directions'],
-              category: row['category'],
-              lrsId: row['lrs_id'],
-              lrsLocPt: row['lrs_loc_pt'],
-              latitude: row['latitude'],
-              longitude: row['longitude'],
-              location: row['location'],
-              latest: row['latest'],
-              latestDate: row['latest_date'],
-            };
-          }
+          console.log('Record:', recordDto);
+          console.log('\n');
+
+          const payload: ProduceRequest[] = [
+            {
+              topic,
+              messages: JSON.stringify({
+                [topic]: recordDto,
+              }),
+            },
+          ];
+
+          await new Promise<void>((resolve) => {
+            this.producer.send(payload, (error, result) => {
+              if (error) {
+                console.error('Error producing data:', error);
+              } else {
+                console.log('Produced data:', result);
+                // Save to MongoDB
+                const record = new this.recordModel(recordDto);
+                record
+                  .save()
+                  .then((savedRecord) => {
+                    console.log('Saved to MongoDB:', savedRecord);
+                    resolve();
+                  })
+                  .catch((saveError) => {
+                    console.error('Error saving to MongoDB:', saveError);
+                    resolve();
+                  });
+              }
+            });
+          });
+
+          await new Promise<void>((resolve) => setTimeout(resolve, 5000));
+        }
+      });
+  }
+
+  async produceSecondCsvData(topic: string, filePath: string): Promise<void> {
+    const csvData: SecondCsvDto[] = [];
+
+    fs.createReadStream(filePath)
+      .pipe(csvParser())
+      .on('data', (data: any) => csvData.push(data))
+      .on('end', async () => {
+        for (const row of csvData) {
+          const recordDto: SecondCsvDto = {
+            locId: row['Loc Id'],
+            county: row['County'],
+            community: row['Community'],
+            functionalClass: row['Functional Class'],
+            ruralUrban: row['Rural Urban'],
+            on: row['On'],
+            from: row['From'],
+            to: row['To'],
+            approach: row['Approach'],
+            at: row['At'],
+            dir: row['Dir'],
+            directions: row['Directions'],
+            category: row['Category'],
+            lrsId: row['Lrs Id'],
+            lrsLocPt: row['Lrs Loc Pt'],
+            latitude: row['Latitude'],
+            longitude: row['Longitude'],
+            location: row['Location'],
+            latest: row['Latest'],
+            latestDate: row['Latest Date'],
+          };
 
           console.log('Record:', recordDto);
           console.log('\n');

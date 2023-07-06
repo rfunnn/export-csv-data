@@ -1,83 +1,83 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type RecordDocument = Record & Document;
-
 @Schema()
 export class Record {
-  //first csv schema
-  @Prop({ required: true })
-  statusDate: string;
+  // First CSV file schema
+  @Prop()
+  statusDate?: string;
 
-  @Prop({ required: true })
-  mainTask: string;
+  @Prop()
+  mainTask?: string;
 
-  @Prop({ required: true })
-  address: string;
+  @Prop()
+  address?: string;
 
-  @Prop({ required: true })
-  totalCost: string;
+  @Prop()
+  totalCost?: string;
 
-  //second csv schema
-  @Prop({ required: true })
-  locId: string;
+  // Second CSV file schema
+  @Prop()
+  locId?: string;
 
-  @Prop({ required: true })
-  county: string;
+  @Prop()
+  county?: string;
 
-  @Prop({ required: true })
-  community: string;
+  @Prop()
+  community?: string;
 
-  @Prop({ required: true })
-  functionalClass: string;
+  @Prop()
+  functionalClass?: string;
 
-  @Prop({ required: true })
-  ruralUrban: string;
+  @Prop()
+  ruralUrban?: string;
 
-  @Prop({ required: true })
-  on: string;
+  @Prop()
+  on?: string;
 
-  @Prop({ required: true })
-  from: string;
+  @Prop()
+  from?: string;
 
-  @Prop({ required: true })
-  to: string;
+  @Prop()
+  to?: string;
 
-  @Prop({ required: true })
-  approach: string;
+  @Prop()
+  approach?: string;
 
-  @Prop({ required: true })
-  at: string;
+  @Prop()
+  at?: string;
 
-  @Prop({ required: true })
-  dir: string;
+  @Prop()
+  dir?: string;
 
-  @Prop({ required: true })
-  directions: string;
+  @Prop()
+  directions?: string;
 
-  @Prop({ required: true })
-  category: string;
+  @Prop()
+  category?: string;
 
-  @Prop({ required: true })
-  lrsId: string;
+  @Prop()
+  lrsId?: string;
 
-  @Prop({ required: true })
-  lrsLocPt: string;
+  @Prop()
+  lrsLocPt?: string;
 
-  @Prop({ required: true })
-  latitude: string;
+  @Prop()
+  latitude?: string;
 
-  @Prop({ required: true })
-  longitude: string;
+  @Prop()
+  longitude?: string;
 
-  @Prop({ required: true })
-  location: string;
+  @Prop()
+  location?: string;
 
-  @Prop({ required: true })
-  latest: string;
+  @Prop()
+  latest?: string;
 
-  @Prop({ required: true })
-  latestDate: string;
+  @Prop()
+  latestDate?: string;
 }
+
+export type RecordDocument = Record & Document;
 
 export const RecordSchema = SchemaFactory.createForClass(Record);

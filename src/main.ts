@@ -12,12 +12,12 @@ async function bootstrap() {
   // First CSV file
   const topic1 = 'first-topic';
   const filePath1 = path.join(__dirname, '../traffic-repair-update.csv');
-  kafkaProducerService.produceData(topic1, filePath1);
+  kafkaProducerService.produceFirstCsvData(topic1, filePath1);
 
   // Second CSV file
   const topic2 = 'second-topic';
   const filePath2 = path.join(__dirname, '../traffic-count.csv');
-  kafkaProducerService.produceData(topic2, filePath2);
+  kafkaProducerService.produceFirstCsvData(topic2, filePath2);
 }
 
 bootstrap();
