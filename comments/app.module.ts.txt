@@ -1,0 +1,20 @@
+app.module.ts:
+Line 1: Imports the necessary modules and classes.
+Lines 4-21: Defines the AppModule class using the @Module decorator.
+Lines 7-13: Imports the MongooseModule and configures it with the MongoDB connection string.
+Line 15: Imports the Record model and its schema.
+Line 17: Declares the providers for the Kafka producer and consumer services.
+Line 20: Exports the AppModule class.
+
+Dependency Injection Configuration: The app.module.ts file is where you define and configure 
+the dependencies (services, repositories, providers) that will be used throughout your application. 
+By using decorators like @Module(), @Controller(), and @Injectable(), you can register and configure the various components of your application.
+
+Module Composition: Nest.js applications are composed of multiple modules, 
+which encapsulate different areas of functionality. In the app.module.ts file, 
+you can import and configure other modules required by your application, such as database modules,
+ authentication modules, logging modules, or custom modules you've created.
+
+Application-Level Configuration: The app.module.ts file is an appropriate place to configure 
+and define application-level settings, such as middleware, global filters, global pipes, or 
+global interceptors. These configurations can be applied to the entire application.

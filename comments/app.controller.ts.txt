@@ -1,0 +1,7 @@
+app.controller.ts:
+Line 1: Imports the necessary modules and classes.
+Lines 4-12: Defines the AppController class using the @Controller decorator.
+Lines 16-20: Defines a route handler for the root route that calls the getHello method of the AppService and returns the result.
+
+the function of creating controller.ts is to create a basic HTTP endpoint or route handler in a web application.
+that returns the result of calling the getHello() method from the AppService.

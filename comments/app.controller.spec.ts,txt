@@ -1,0 +1,5 @@
+app.controller.spec.ts:
+Line 1: Imports the necessary modules and classes.
+Lines 4-19: Defines the unit tests for the AppController class using the describe and it functions.
+Lines 8-15: Sets up the testing module by creating a testing module and obtaining an instance of the AppController.
+Line 18: Defines the test case that checks if the getHello method returns the expected string.

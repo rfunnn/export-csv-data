@@ -1,0 +1,31 @@
+record.schema.ts:
+Line 1: Imports the necessary modules and classes.
+Lines 4-9: Defines a Mongoose schema for the Record model using the @Schema decorator and the @Prop decorator for the data field.
+Line 11: Exports the created schema using SchemaFactory.createForClass.
+
+kafka.producer.ts:
+Line 1: Imports the necessary modules and classes.
+Lines 4-7: Defines the KafkaProducerService class using the @Injectable decorator.
+Lines 10-13: Declares private properties for the Kafka client and producer.
+Lines 15-21: Defines the constructor that initializes the Kafka client and producer.
+Lines 23-39: Defines the produceData method that takes the topic name and file path as parameters and produces data to Kafka.
+Line 24: Creates an empty array to store the CSV data.
+Lines 26-37: Reads the CSV file using fs.createReadStream and pipes it through the csvParser.
+Line 27: Adds a listener for the 'data' event that pushes each row of data into the csvData array.
+Line 30: Adds a listener for the 'end' event that is triggered when the CSV parsing is complete.
+Lines 33-38: Iterates over the csvData array at an interval of 5 seconds and sends each row of data to the Kafka broker using the producer.
+
+kafka.consumer.ts:
+Line 1: Imports the necessary modules and classes.
+Lines 4-7: Defines the KafkaConsumerService class using the @Injectable decorator.
+Lines 10-13: Declares private properties for the Kafka client and consumer.
+Lines 15-21: Defines the constructor that initializes the Kafka client and consumer.
+Lines 23-29: Defines the consumeData method that listens for incoming messages from Kafka and handles them.
+Line 24: Adds a listener for the 'message' event that logs the consumed data.
+Line 28: Adds a listener for the 'error' event that logs any errors that occur during consumption.
+
+
+
+
+
+

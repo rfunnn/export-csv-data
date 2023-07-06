@@ -1,0 +1,21 @@
+main.ts:
+Line 1: Imports the necessary modules and classes.
+Line 5: Defines an async function named bootstrap using the async keyword.
+Line 6: Creates an instance of the NestJS application using NestFactory.create and assigns it to the app variable.
+Line 7: Listens on port 3003 by calling the listen method on the app instance.
+Line 9: Retrieves an instance of the KafkaProducerService using app.get.
+Line 10: Specifies the Kafka topic name.
+Line 11: Sets the file path to the CSV file.
+Line 12: Calls the produceData method of the KafkaProducerService to start producing data to Kafka.
+Line 14: Executing the bootstrap function.
+
+
+Line 5: The reason an async function is used for bootstrap is that the bootstrap process in Angular may involve asynchronous operations such as loading external resources or making HTTP requests. By using an async function, you can write your bootstrap code in a more concise and readable manner using async/await syntax.
+Line 6: The NestFactory class is responsible for creating the application instance and provides various methods for configuration and customization
+      : Internally it prepares the application to handle incoming requests.
+      : It is asynchronous, so it returns a promise. Therefore, it's common to use the async/await syntax 
+Line 9: Configuration and Setup: The main.ts file is often considered the entry point of the application, where you perform initial configuration and setup. Retrieving the Kafka producer service in this file allows you to initialize and configure the service with the required settings, such as Kafka broker URLs, authentication credentials, or other relevant configurations.
+      : Dependency Injection: Nest.js relies heavily on dependency injection, where services are registered and injected into the components that require them. By retrieving the Kafka producer service using app.get(), you can ensure that the service is registered and can be injected into other components or services throughout the application.
+      : To  ensure that the service is available throughout the application and can be easily injected into other components or services when needed. This promotes code reusability, modularity, and follows the principles of dependency injection.
+Line10: Use path.join to get the path of csv
+    

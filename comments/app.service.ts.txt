@@ -1,0 +1,7 @@
+app.service.ts:
+Line 1: Imports the necessary modules and classes.
+Lines 4-7: Defines the AppService class using the @Injectable decorator.
+Line 10: Defines the getHello method that returns the string "Hello World!".
+
+By creating an app.service.ts file that returns 'hello world', 
+you are implementing a simple service that provides a single method or function to retrieve a specific value
