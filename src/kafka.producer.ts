@@ -21,7 +21,11 @@ export class KafkaProducerService {
     this.producer = new Producer(this.client);
   }
 
-  async produceData(topic: string, filePath: string): Promise<void> {
+  async produceData(
+    topic: string,
+    filePath: string,
+    isPreviousData = false,
+  ): Promise<void> {
     const csvData: any[] = [];
 
     fs.createReadStream(filePath)
@@ -29,27 +33,48 @@ export class KafkaProducerService {
       .on('data', (data: any) => csvData.push(data))
       .on('end', async () => {
         for (const row of csvData) {
-          const statusDate = row['Status Date'];
-          const mainTask = row['Main Task'];
-          const address = row['Address'];
-          const totalCost = row['Total Cost'];
+          let recordDto: RecordDto;
 
-          console.log('Status Date:', statusDate);
-          console.log('Main Task:', mainTask);
-          console.log('Address:', address);
-          console.log('Total Cost:', totalCost);
+          if (isPreviousData) {
+            recordDto = {
+              statusDate: row['Status Date'],
+              mainTask: row['Main Task'],
+              address: row['Address'],
+              totalCost: row['Total Cost'],
+            };
+          } else {
+            recordDto = {
+              locId: row['loc_id'],
+              county: row['county'],
+              community: row['community'],
+              functionalClass: row['functional_class'],
+              ruralUrban: row['rural_urban'],
+              on: row['on'],
+              from: row['from'],
+              to: row['to'],
+              approach: row['approach'],
+              at: row['at'],
+              dir: row['dir'],
+              directions: row['directions'],
+              category: row['category'],
+              lrsId: row['lrs_id'],
+              lrsLocPt: row['lrs_loc_pt'],
+              latitude: row['latitude'],
+              longitude: row['longitude'],
+              location: row['location'],
+              latest: row['latest'],
+              latestDate: row['latest_date'],
+            };
+          }
+
+          console.log('Record:', recordDto);
           console.log('\n');
 
           const payload: ProduceRequest[] = [
             {
               topic,
               messages: JSON.stringify({
-                [topic]: {
-                  'Status Date': statusDate,
-                  'Main Task': mainTask,
-                  Address: address,
-                  'Total Cost': totalCost,
-                },
+                [topic]: recordDto,
               }),
             },
           ];
@@ -61,12 +86,6 @@ export class KafkaProducerService {
               } else {
                 console.log('Produced data:', result);
                 // Save to MongoDB
-                const recordDto: RecordDto = {
-                  statusDate,
-                  mainTask,
-                  address,
-                  totalCost,
-                };
                 const record = new this.recordModel(recordDto);
                 record
                   .save()

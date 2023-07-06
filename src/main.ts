@@ -8,9 +8,16 @@ async function bootstrap() {
   await app.listen(3003);
 
   const kafkaProducerService = app.get(KafkaProducerService);
-  const topic = 'your-topic-name';
-  const filePath = path.join(__dirname, '../traffic-signals-1.csv');
-  kafkaProducerService.produceData(topic, filePath);
+
+  // First CSV file
+  const topic1 = 'first-topic';
+  const filePath1 = path.join(__dirname, '../traffic-repair-update.csv');
+  kafkaProducerService.produceData(topic1, filePath1);
+
+  // Second CSV file
+  const topic2 = 'second-topic';
+  const filePath2 = path.join(__dirname, '../traffic-count.csv');
+  kafkaProducerService.produceData(topic2, filePath2);
 }
 
 bootstrap();
